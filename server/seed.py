@@ -8,8 +8,8 @@ from server.models.activity import Activity
 from server.models.signup import Signup
 
 
-app = create_app()
-fake = Faker()
+app = create_app() # Create app instance
+fake = Faker()  # Initialize Faker instance
 
 with app.app_context():
     # Reset tables
