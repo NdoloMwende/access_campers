@@ -1,11 +1,18 @@
 from flask import Blueprint, jsonify, request
-from models import db
-from models.signup import Signup
-from models.camper import Camper
-from models.activity import Activity
+from server.models import db
+from server.models.signup import Signup
+from server.models.camper import Camper
+from server.models.activity import Activity
 
 signups_bp = Blueprint("signups", __name__, url_prefix="/signups")
 
+# GET all signups
+@signups_bp.get("")
+def get_all_signups():
+    signups = Signup.query.all()
+    return jsonify([s.to_dict(nest_camper=True, nest_activity=True) for s in signups]), 200
+
+# POST a new signup
 @signups_bp.post("")
 def create_signup():
     data = request.get_json()
@@ -17,8 +24,9 @@ def create_signup():
 
     errors = signup.validate()
     if errors:
-        return jsonify({"errors": ["validation errors"]}), 400
+        return jsonify({"errors": errors}), 400
 
+    
     camper = Camper.query.get(signup.camper_id)
     activity = Activity.query.get(signup.activity_id)
     if not camper or not activity:
@@ -28,4 +36,4 @@ def create_signup():
     db.session.commit()
 
     signup = Signup.query.get(signup.id)
-    return jsonify(signup.to_dict(nest_activity=True, nest_camper=True)), 201
+    return jsonify(signup.to_dict(nest_camper=True, nest_activity=True)), 201

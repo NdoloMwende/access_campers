@@ -1,14 +1,13 @@
 from flask import Blueprint, jsonify, request
-from models import db
-from models.camper import Camper
+from server.models import db
+from server.models.camper import Camper
 
 campers_bp = Blueprint("campers", __name__, url_prefix="/campers")
 
 @campers_bp.get("")
 def get_all_campers():
     campers = Camper.query.all()
-    result = [c.to_dict() for c in campers]
-    return jsonify(result), 200
+    return jsonify([c.to_dict() for c in campers]), 200
 
 @campers_bp.get("/<int:id>")
 def get_camper(id):
@@ -20,11 +19,13 @@ def get_camper(id):
 @campers_bp.post("")
 def create_camper():
     data = request.get_json()
-    camper = Camper(name=data.get("name"), age=data.get("age"))
-
+    camper = Camper(
+        name=data.get("name"),
+        age=data.get("age")
+    )
     errors = camper.validate()
     if errors:
-        return jsonify({"errors": ["validation errors"]}), 400
+        return jsonify({"errors": errors}), 400
 
     db.session.add(camper)
     db.session.commit()
@@ -37,13 +38,14 @@ def update_camper(id):
         return jsonify({"error": "Camper not found"}), 404
 
     data = request.get_json()
-    camper.name = data.get("name", camper.name)
-    camper.age = data.get("age", camper.age)
+    if "name" in data:
+        camper.name = data["name"]
+    if "age" in data:
+        camper.age = data["age"]
 
     errors = camper.validate()
     if errors:
-        db.session.rollback()
-        return jsonify({"errors": ["validation errors"]}), 400
+        return jsonify({"errors": errors}), 400
 
     db.session.commit()
     return jsonify(camper.to_dict()), 202
