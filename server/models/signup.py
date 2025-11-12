@@ -1,4 +1,4 @@
-from server.models import db
+from . import db
 
 class Signup(db.Model):
     __tablename__ = "signups"

@@ -1,4 +1,4 @@
-from server.models import db
+from . import db
 
 class Camper(db.Model):
     __tablename__ = "campers"

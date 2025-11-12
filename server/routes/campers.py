@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from server.models import db
-from server.models.camper import Camper
+from models import db
+from models.camper import Camper
 
 campers_bp = Blueprint("campers", __name__, url_prefix="/campers")
 

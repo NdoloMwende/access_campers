@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
-from server.models import db
-from server.models.signup import Signup
-from server.models.camper import Camper
-from server.models.activity import Activity
+from models import db
+from models.signup import Signup
+from models.camper import Camper
+from models.activity import Activity
 
 signups_bp = Blueprint("signups", __name__, url_prefix="/signups")
 

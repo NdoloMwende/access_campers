@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
-from server.models import db
-from server.models.activity import Activity
+from models import db
+from models.activity import Activity
 
 activities_bp = Blueprint("activities", __name__, url_prefix="/activities")
 
